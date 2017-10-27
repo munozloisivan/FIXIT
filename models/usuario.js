@@ -11,10 +11,8 @@ var usuarioSchema = new Schema({
     password: { type: String },
     telefono: { type: Number, unique: true },
     codigoPostal: { type: Number },
-    admin: { type: Boolean },
     puntos: { type: Number },
-    /*nº de personas que apoyan sus avisos*/
-    participantes: { type: Number },
+    participantes: { type: Number }, /*nº de personas que apoyan sus avisos*/
     titulos: {
         tituloActivo: { type: String },
         coleccion: [ {type: String} ] /*se añade al vector una vez tiene el logro, lo veo mas sencillo,
