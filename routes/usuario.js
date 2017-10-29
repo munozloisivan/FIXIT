@@ -11,3 +11,13 @@ var express = require('express'),
 //
 // }
 
+//insertar un usuario
+router.post('/add', usuarioCtrl.addUser);
+
+//ver todos los usuarios
+router.get('/all', usuarioCtrl.findAllUsers);
+
+//Ver usuario por id
+router.get('/:id', usuarioCtrl.findUserById);
+
+module.exports = router;

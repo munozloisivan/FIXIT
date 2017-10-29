@@ -24,15 +24,21 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(methodOverride());
 
+var router = express.Router();
+router.get('/', function(req, res) {
+    res.send("Hello World!");
+});
+app.use(router);
+
 //Routes
-app.use('/aviso', avisoRoutes);
-app.use('/categoria', categoriaRoutes);
-app.use('/gestor', gestorRoutes);
-app.use('/logro', logroRoutes);
-app.use('/usuario', usuarioRoutes);
+//app.use('/aviso', avisoRoutes);
+//app.use('/categoria', categoriaRoutes);
+//app.use('/gestor', gestorRoutes);
+//app.use('/logro', logroRoutes);
+app.use('/user', usuarioRoutes);
 
 // Connection to DB
-mongoose.connect('mongodb://localhost/testdb', function(err, res) {
+mongoose.connect('mongodb://localhost/fixitest', function(err, res) {
     if(err) throw err;
     console.log('Connected to Database');
 });
