@@ -31,7 +31,7 @@ router.get('/', function(req, res) {
 app.use(router);
 
 //Routes
-//app.use('/aviso', avisoRoutes);
+app.use('/aviso', avisoRoutes);
 app.use('/categoria', categoriaRoutes);
 app.use('/gestor', gestorRoutes);
 app.use('/logro', logroRoutes);
