@@ -44,6 +44,7 @@ exports.findLogroById = function (req, res) {
 
 
 /*UPDATE*/
+//Modificar un logro a partir de su id
 exports.updateLogro = function (req, res) {
         Logro.findById(req.params.id, function (err, logro) {
             console.log('UPDATE Logro '+req.params.id);
