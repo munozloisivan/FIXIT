@@ -3,21 +3,22 @@ var express = require('express'),
     mongoose = require('mongoose'),
     usuarioCtrl = require('../controllers/usuario');
 
-//Todos los metodos de usuario
+/*GET*/
+//ver todos los usuarios
+router.get('/all', usuarioCtrl.findAllUsers);
+//Ver usuario por id
+router.get('/:id', usuarioCtrl.findUserById);
 
-//exports.NOMBRE-FUNCION = function(req,res){
-//
-//           mongo method
-//
-// }
-
+/*POST*/
 //insertar un usuario
 router.post('/add', usuarioCtrl.addUser);
 
-//ver todos los usuarios
-router.get('/all', usuarioCtrl.findAllUsers);
+/*PUT*/
+//Actualizar datos de usuario
+router.put('/:id/update', usuarioCtrl.updateUsuarioPersonal);
 
-//Ver usuario por id
-router.get('/:id', usuarioCtrl.findUserById);
+/*DELETE*/
+router.delete('/:id/deleete', usuarioCtrl.deleteUser);
+
 
 module.exports = router;

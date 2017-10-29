@@ -34,7 +34,7 @@ app.use(router);
 //app.use('/aviso', avisoRoutes);
 //app.use('/categoria', categoriaRoutes);
 //app.use('/gestor', gestorRoutes);
-//app.use('/logro', logroRoutes);
+app.use('/logro', logroRoutes);
 app.use('/user', usuarioRoutes);
 
 // Connection to DB
