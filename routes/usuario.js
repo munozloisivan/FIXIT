@@ -21,4 +21,7 @@ router.put('/:id/update', usuarioCtrl.updateUsuarioPersonal);
 router.delete('/:id/deleete', usuarioCtrl.deleteUser);
 
 
+//Authenticate
+router.post('/auth', usuarioCtrl.Login);
+
 module.exports = router;

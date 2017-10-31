@@ -1,6 +1,8 @@
 var mongoose = require('mongoose'),
     Usuario = mongoose.model('Usuario');
 
+var User = require('../models/usuario');
+
 /*CREATE*/
 //Insert a new user
 exports.addUser = function (req, res) {
@@ -97,7 +99,18 @@ exports.deleteUser = function (req, res) {
 };
 
 
+//Authenticate
+exports.Login = function (req, res) {
+    User.authenticate(req.body.email, req.body.password, function (error, user) {
+        if(error || !user){
+            var error = new Error('Correo o contraseña incorrectos.');
+            error.status = 401;
+            return res.send(error.message);
+        } else {
+            return res.send('Autenticado correctamente');
+        }
 
-
+    });
+};
 
 
