@@ -3,7 +3,8 @@ var express = require("express"),
     app = express(),
     bodyParser  = require("body-parser"),
     methodOverride = require("method-override"),
-    mongoose = require('mongoose');
+    mongoose = require('mongoose'),
+    morgan = require('morgan');
 
 //Acceso a Modelos
 var avisoModel = require('./models/aviso'),
@@ -23,6 +24,9 @@ var avisoRoutes = require('./routes/aviso'),
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(methodOverride());
+
+//Para ver las peticiones http en terminal
+app.use(morgan('dev'));
 
 var router = express.Router();
 router.get('/', function(req, res) {
