@@ -78,3 +78,18 @@ exports.deleteGestorById = function (req,res) {
         });
     });
 };
+
+
+//Authenticate
+exports.GestorAuthentication = function (req, res) {
+    Gestor.authenticate(req.body.email, req.body.password, function (error, gestor) {
+        if(error || !gestor){
+            var error = new Error('Correo o contraseña incorrectos.');
+            error.status = 401;
+            return res.send(error.message);
+        } else {
+            return res.send('Autenticado correctamente');
+        }
+
+    });
+};

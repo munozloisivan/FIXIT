@@ -100,7 +100,7 @@ exports.deleteUser = function (req, res) {
 
 
 //Authenticate
-exports.Login = function (req, res) {
+exports.UserAuthentication = function (req, res) {
     User.authenticate(req.body.email, req.body.password, function (error, user) {
         if(error || !user){
             var error = new Error('Correo o contraseña incorrectos.');

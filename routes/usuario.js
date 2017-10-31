@@ -22,6 +22,6 @@ router.delete('/:id/deleete', usuarioCtrl.deleteUser);
 
 
 //Authenticate
-router.post('/auth', usuarioCtrl.Login);
+router.post('/auth', usuarioCtrl.UserAuthentication);
 
 module.exports = router;

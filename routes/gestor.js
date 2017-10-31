@@ -21,5 +21,7 @@ router.put('/:id/update', gestorCtrl.updateGestor);
 //Eliminar gestor a partir de su id
 router.delete('/:id/delete', gestorCtrl.deleteGestorById);
 
+//Authenticate
+router.post('/auth', gestorCtrl.GestorAuthentication);
 
 module.exports = router;
