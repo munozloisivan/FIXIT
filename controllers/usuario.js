@@ -3,6 +3,9 @@ var mongoose = require('mongoose'),
 
 var User = require('../models/usuario');
 
+var emailController = require('../controllers/mail');
+
+
 /*CREATE*/
 //Insert a new user
 exports.addUser = function (req, res) {
@@ -113,4 +116,81 @@ exports.UserAuthentication = function (req, res) {
     });
 };
 
+//Genera una contraseña nueva
+//la cifra y la guarda en la base de datos
+//se le envia al usuario por correo electrónico
+//el ya la modificará desde su perfil si quiere
+//del cifrado se encarga /models/usuario  con la funcion de pre('save')
+exports.changepassword = function (req, res) {
+    var id;
 
+    User.findOne({ email: req.body.email }).exec(function (err, user) {
+        id = user._id;
+        if(err){
+            return callback(err)
+        } else if (!user){
+            var err = new Error('User not found.');
+            err.status = 401;
+            return callback(err.message);
+        }
+
+        var generatePassword = require("password-generator");
+
+        var maxLength = 18;
+        var minLength = 12;
+        var uppercaseMinCount = 3;
+        var lowercaseMinCount = 3;
+        var numberMinCount = 2;
+        var specialMinCount = 2;
+        var UPPERCASE_RE = /([A-Z])/g;
+        var LOWERCASE_RE = /([a-z])/g;
+        var NUMBER_RE = /([\d])/g;
+        var SPECIAL_CHAR_RE = /([\?\-])/g;
+        var NON_REPEATING_CHAR_RE = /([\w\d\?\-])\1{2,}/g;
+
+        function isStrongEnough(passwordToChange) {
+            var uc = passwordToChange.match(UPPERCASE_RE);
+            var lc = passwordToChange.match(LOWERCASE_RE);
+            var n = passwordToChange.match(NUMBER_RE);
+            var sc = passwordToChange.match(SPECIAL_CHAR_RE);
+            var nr = passwordToChange.match(NON_REPEATING_CHAR_RE);
+            return passwordToChange.length >= minLength &&
+                !nr &&
+                uc && uc.length >= uppercaseMinCount &&
+                lc && lc.length >= lowercaseMinCount &&
+                n && n.length >= numberMinCount &&
+                sc && sc.length >= specialMinCount;
+        }
+
+        function customPassword() {
+            var passwordToChange = "";
+            var randomLength = Math.floor(Math.random() * (maxLength - minLength)) + minLength;
+            while (!isStrongEnough(passwordToChange)) {
+                passwordToChange = generatePassword(randomLength, false, /[\w\d\?\-]/);
+            }
+            return passwordToChange;
+        }
+
+            //rellenamos los campos para actualizar (los demas los dejamos igual)
+            user.nombre = user.nombre,
+            user.apellido = user.apellido,
+            user.alias = user.alias,
+            user.email = user.email,
+            user.password = customPassword(); //contraseña para autenticar (sin cifrar)
+            user.telefono = user.telefono,
+            user.codigoPostal = user.codigoPostal;
+
+            console.log("nombre: "+user.nombre+" passTosave: "+ user.password );
+
+        user.save(function (err, user) {
+            //de aqui pasa a /models/usuario antes de hacer el save para cifrar la contraseña
+            if(err)
+                return res.status(500).send(err.message);
+            res.status(200).jsonp(user);
+        });
+
+        emailController.sendPassEmail(req.body.email, 'A partir de ahora su contraseña es: '+user.password+'. \n Puede cambiarla en cualquier momento desde su perfil. \n Atentamente, \n El equipo de FIXIT')
+
+    });
+
+};
