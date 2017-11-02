@@ -20,6 +20,8 @@ var avisoRoutes = require('./routes/aviso'),
     logroRoutes = require('./routes/logro'),
     usuarioRoutes = require('./routes/usuario');
 
+var mailroutes = require('./routes/mail');
+
 //Utils extra
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -40,6 +42,7 @@ app.use('/categoria', categoriaRoutes);
 app.use('/gestor', gestorRoutes);
 app.use('/logro', logroRoutes);
 app.use('/user', usuarioRoutes);
+app.use('/mail', mailroutes);
 
 // Connection to DB
 mongoose.connect('mongodb://localhost/fixitest', function(err, res) {
