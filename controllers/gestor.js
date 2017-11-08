@@ -1,5 +1,6 @@
 var mongoose = require('mongoose'),
-    Gestor = mongoose.model('Gestor');
+    Gestor = mongoose.model('Gestor'),
+    emailController = require('../controllers/mail');
 
 /*CREATE*/
 //Insertar un nuevo gestor
@@ -90,6 +91,81 @@ exports.GestorAuthentication = function (req, res) {
         } else {
             return res.send('Autenticado correctamente');
         }
+
+    });
+};
+
+
+//Generación de contraseña nueva, cifrada y enviada por mail
+exports.changepassword = function(req, res){
+    var id;
+
+    Gestor.findOne({ email: req.body.email}).exec(function (err, gestor) {
+        id = gestor._id;
+        if(err){
+            return callback(err)
+        } else if(!gestor){
+            var err = new Error('Gestor no encontrado.');
+            err.status = 401;
+            return callback(err.message);
+        }
+
+        var generatePassword = require("password-generator");
+
+        var maxLength = 18;
+        var minLength = 12;
+        var uppercaseMinCount = 3;
+        var lowercaseMinCount = 3;
+        var numberMinCount = 2;
+        var specialMinCount = 2;
+        var UPPERCASE_RE = /([A-Z])/g;
+        var LOWERCASE_RE = /([a-z])/g;
+        var NUMBER_RE = /([\d])/g;
+        var SPECIAL_CHAR_RE = /([\?\-])/g;
+        var NON_REPEATING_CHAR_RE = /([\w\d\?\-])\1{2,}/g;
+
+        function isStrongEnough(passwordToChange) {
+            var uc = passwordToChange.match(UPPERCASE_RE);
+            var lc = passwordToChange.match(LOWERCASE_RE);
+            var n = passwordToChange.match(NUMBER_RE);
+            var sc = passwordToChange.match(SPECIAL_CHAR_RE);
+            var nr = passwordToChange.match(NON_REPEATING_CHAR_RE);
+            return passwordToChange.length >= minLength &&
+                !nr &&
+                uc && uc.length >= uppercaseMinCount &&
+                lc && lc.length >= lowercaseMinCount &&
+                n && n.length >= numberMinCount &&
+                sc && sc.length >= specialMinCount;
+        }
+
+        function customPassword() {
+            var passwordToChange = "";
+            var randomLength = Math.floor(Math.random() * (maxLength - minLength)) + minLength;
+            while (!isStrongEnough(passwordToChange)) {
+                passwordToChange = generatePassword(randomLength, false, /[\w\d\?\-]/);
+            }
+            return passwordToChange;
+        }
+
+        //relleno de campos a actualizar
+        gestor.nombre = req.body.nombre,
+        gestor.apellidos = req.body.apellidos,
+        gestor.email = req.body.email,
+        gestor.password = customPassword(),
+        gestor.delegacion = req.body.delegacion,
+        gestor.departamento = req.body.departamento,
+        gestor.telefono = req.body.telefono;
+
+        console.log("nombre: "+gestor.nombre+" passTosave: "+ gestor.password );
+
+        gestor.save(function (err, gestor) {
+            //antes de guardarse pasa al modelo donde cifra la pass (pre save)
+            if(err)
+                return res.status(500).send(err.message);
+            res.status(200).jsonp(gestor);
+        });
+
+        emailController.sendPassEmail(req.body.email, 'A partir de ahora su contraseña es: '+gestor.password+'. \n Puede cambiarla en cualquier momento desde su perfil. \n Atentamente, \\n El equipo de FIXIT\ ')
 
     });
 };
